@@ -1,0 +1,16 @@
+::ng-deep .customToast {
+  border-radius: 80px;
+  text-align: center;
+  --box-shadow: none;
+}
+
+.preloader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: white;
+}

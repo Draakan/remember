@@ -1,0 +1,28 @@
+<app-header [title]="title"></app-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-item>
+        <ion-label>Email</ion-label>
+        <ion-input formControlName="email"></ion-input>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <ion-item>
+        <ion-label>Password</ion-label>
+        <ion-input formControlName="password" type="password"></ion-input>
+      </ion-item>
+    </ion-card>
+    <div class="button_center">
+      <ion-button 
+        [disabled]="form.invalid"
+        (click)="signIn()"
+        color="danger">Sign In
+      </ion-button>
+      <ion-text (click)="toRegisterPage()">Don't have an account? &nbsp;
+        <ion-icon name="arrow-forward"></ion-icon>
+      </ion-text>
+    </div>
+  </form>
+</ion-content>

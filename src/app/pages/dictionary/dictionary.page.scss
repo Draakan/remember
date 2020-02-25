@@ -1,0 +1,36 @@
+ion-content {
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .container {
+    margin-bottom: 4.5rem;
+
+    &__card--item {
+      position: relative;
+
+      .skeleton {
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+      }
+    }
+  }
+
+  ::ng-deep ion-card {
+    border-radius: 10px;
+  }
+
+  ::ng-deep ion-list {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: -1px;
+  }
+
+  ::ng-deep .item-options-md {
+    border-bottom-width: 0;
+  }
+}

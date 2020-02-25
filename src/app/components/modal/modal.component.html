@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ title }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-item>
+        <ion-label>English</ion-label>
+        <ion-input formControlName="en"></ion-input>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <ion-item>
+        <ion-label>Ukranian</ion-label>
+        <ion-input formControlName="ua"></ion-input>
+      </ion-item>
+    </ion-card>
+  </form>
+  <div class="button_center">
+    <ion-button
+      [disabled]="form.invalid"
+      color="danger"
+      (click)="onFormSubmit()">Add
+    </ion-button>
+  </div>
+</ion-content>

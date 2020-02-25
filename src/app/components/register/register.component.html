@@ -1,0 +1,47 @@
+<app-header [title]="title"></app-header>
+
+<ion-content>
+  <form [formGroup]="form">
+    <ion-card>
+      <ion-item>
+        <ion-label>Name</ion-label>
+        <ion-input formControlName="name"></ion-input>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <ion-item>
+        <ion-label>Date of birth</ion-label>
+        <ion-datetime formControlName="date" mode="ios"></ion-datetime>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <ion-item>
+        <ion-label>Email</ion-label>
+        <ion-input formControlName="email"></ion-input>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <ion-item>
+        <ion-label>Password</ion-label>
+        <ion-input formControlName="password" type="password"></ion-input>
+      </ion-item>
+    </ion-card>
+    <!-- <ion-card>
+      <ion-item>
+        <ion-label>Confirm password</ion-label>
+        <ion-input type="password"></ion-input>
+      </ion-item>
+    </ion-card> -->
+    <div class="button_center">
+      <ion-button 
+        [disabled]="form.invalid"
+        (click)="register()"
+        color="danger">Register
+      </ion-button>
+      <ion-text (click)="toLoginPage()">
+        <ion-icon name="arrow-back"></ion-icon>
+        &nbsp; Have an account?
+      </ion-text>
+    </div>
+  </form>
+</ion-content>

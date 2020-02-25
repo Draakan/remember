@@ -1,0 +1,29 @@
+ion-item {
+  --padding-start: 10px;
+
+  .circle_stat {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    font-size: 14px;
+    border-radius: 50%;
+    background-color: lighten(#0cd1e8, 45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ion-label {
+    display: flex;
+    justify-content: space-between;
+  
+    .dark-blue {
+      color: var(--ion-color-primary-shade);
+    }
+  }
+
+  .only-icon {
+    margin-left: 2px;
+    margin-right: -15px;
+  }
+}

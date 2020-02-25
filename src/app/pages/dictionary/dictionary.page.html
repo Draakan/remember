@@ -1,0 +1,57 @@
+<app-header></app-header>
+
+<ion-content #content scrollEvents="true">
+
+  <div class="spinner" *ngIf="isLoadingData">
+    <ion-spinner name="lines"></ion-spinner>
+  </div>
+
+  <app-search
+    *ngIf="groupedWords.length"
+    (search)="onSearch($event)"
+    (cancel)="onCancelSearch()">
+  </app-search>
+
+  <div class="container">
+    <ion-card 
+      *ngFor="let group of groupedWords; let groupIndex = index"
+      [ngStyle]="{'display': getVisibilityGroup(group) ? 'block': 'none'}">
+      <div style="text-align: center">
+        <ion-chip color="warning">
+          <ion-label color="dark">{{ group.date | date:'fullDate' }}</ion-label>
+        </ion-chip>
+      </div>
+      <ion-list lines="full">
+        <div class="container__card--item" *ngFor="let word of group.words; let itemIndex = index">
+          <ion-item class="skeleton" *ngIf="isEditingData && selectedId === word.id">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-item>
+          <app-word-item
+            [ngStyle]="{'display': getVisibilityWord(word.en) ? 'block': 'none'}"
+            class="items"
+            [word]="word"
+            (itemRemove)="onItemRemove($event, groupIndex, itemIndex)"
+            (itemEdit)="onItemEdit($event, groupIndex, itemIndex)">
+          </app-word-item>
+        </div>
+      </ion-list>
+    </ion-card>
+    <ion-card *ngIf="!groupedWords.length && !isLoadingData">
+      <ion-list lines="none">
+        <ion-item><div style="margin: 0 auto;">There is nothing to show...</div></ion-item>
+      </ion-list>
+    </ion-card>
+  </div>
+
+  <ion-fab 
+    *ngIf="groupedWords.length || !isLoadingData" 
+    [hideOnscroll]="content" 
+    vertical="bottom"
+    horizontal="end" 
+    slot="fixed">
+    <ion-fab-button color="danger" (click)="onAddButtonClick()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

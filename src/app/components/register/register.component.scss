@@ -1,0 +1,36 @@
+ion-content {
+
+  ion-card {
+    border-radius: 30px;
+    height: 3rem;
+
+    &:first-child {
+      margin-top: 5rem;
+    }
+
+    ion-datetime {
+      padding-bottom: 4px;
+    }
+  }
+
+  .button_center {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    ion-text {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-top: .5rem;
+      color: var(--ion-color-primary-tint);
+      margin-left: -.4rem;
+    }
+
+    ion-button {
+      --border-radius: 20px;
+      margin-bottom: .5rem;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+ion-searchbar {
+  margin-top: .7rem;
+
+  ::ng-deep .searchbar-input {
+    border-radius: 10px;
+  }
+
+  ::ng-deep .searchbar-search-icon.sc-ion-searchbar-md {
+    left: 10px;
+    top: 10px;
+    width: 21px;
+    height: 21px;
+  }
+}
