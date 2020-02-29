@@ -9,6 +9,8 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { NotificationService } from './services/notification/notification.service';
 import { LoaderService } from './services/loader/loader.service';
 
+// tslint:disable: variable-name
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',

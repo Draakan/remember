@@ -7,6 +7,9 @@ import { Group } from '../../models/group.model';
 import { take, map } from 'rxjs/operators';
 import { groupBy } from 'underscore';
 import { COLLECTIONS } from 'src/app/configs';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/app.reducer';
+import { SetAllWords } from 'src/app/state/words/words.actions';
 
 // tslint:disable: variable-name
 
@@ -22,11 +25,13 @@ export class FirestoreService {
   constructor(
     private db: AngularFirestore,
     private storage: Storage,
+    private store: Store<State>
   ) { }
 
   public async getData() {
     this._user_uid = await this.storage.get('user_uid');
-    return this.db.collection<any>(this._user_uid)
+
+    this.db.collection<any>(this._user_uid)
         .snapshotChanges()
         .pipe(
           take(1),
@@ -46,14 +51,12 @@ export class FirestoreService {
 
             array.sort((a, b) => (new Date(a.date) < new Date(b.date)) ? 1 : ((new Date(b.date) < new Date(a.date)) ? -1 : 0));
 
-            return [...array];
-          }));
+            this.store.dispatch(new SetAllWords(array));
+          })).toPromise();
   }
 
   public async getUsersInfo() {
-    this.user = new Promise(async res => {
-      res((await this.db.firestore.collection(`${ COLLECTIONS.USERS }`).doc(this._user_uid).get()).data());
-    });
+    this.user = Promise.resolve((await this.db.firestore.collection(`${ COLLECTIONS.USERS }`).doc(this._user_uid).get()).data());
   }
 
   public get user$() {

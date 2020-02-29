@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, DoCheck, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { AlertService } from '../../../../services/alert/alert.service';
 import { Word } from '../../../../models/word.model';
@@ -9,25 +9,17 @@ import { Word } from '../../../../models/word.model';
   styleUrls: ['./word-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WordItemComponent implements DoCheck {
-  static checkCounter: number = 0;
+export class WordItemComponent {
 
   @Input() word: Word;
 
-  @Output() itemEdit = new EventEmitter<string>();
+  @Output() itemEdit = new EventEmitter<Word>();
   @Output() itemRemove = new EventEmitter<string>();
-
-  localCounter: number = 0;
 
   constructor(
     private alertService: AlertService,
     public tts: TextToSpeech,
   ) { }
-
-  ngDoCheck() {
-    this.localCounter = WordItemComponent.checkCounter;
-    WordItemComponent.checkCounter++;
-  }
 
   public async speak(word: string) {
     await this.tts.speak({
@@ -36,12 +28,16 @@ export class WordItemComponent implements DoCheck {
     });
   }
 
-  public onItemEdit(id: string) {
-    this.itemEdit.emit(id);
+  public onItemEdit(word: Word) {
+    this.itemEdit.emit(word);
   }
 
   public async onItemRemove(id: string) {
-    await this.alertService.openAlert('delete', () => this.itemRemove.emit(id));
+    const result = await this.alertService.openAlert('delete');
+
+    if (result === 1) {
+      this.itemRemove.emit(id);
+    }
   }
 
 }

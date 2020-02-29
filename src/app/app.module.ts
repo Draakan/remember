@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -13,7 +14,11 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { ForegroundService } from '@ionic-native/foreground-service/ngx';
+import { Dialogs } from '@ionic-native/dialogs/ngx';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
+import { Toast } from '@ionic-native/toast/ngx';
 import { LayoutModule } from './layout/layout.module';
+import { StoreModule } from '@ngrx/store';
 
 import { AppComponent } from './app.component';
 import { ModalComponent } from './components/modal/modal.component';
@@ -28,6 +33,7 @@ import { AngularFireAuthGuard, AngularFireAuthGuardModule } from '@angular/fire/
 
 // config
 import { firebaseConfig } from './configs';
+import { reducers } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -41,6 +47,7 @@ import { firebaseConfig } from './configs';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     LayoutModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -48,6 +55,7 @@ import { firebaseConfig } from './configs';
     AngularFireAuthGuardModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
+    StoreModule.forRoot(reducers),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule.enablePersistence(),
   ],
@@ -59,6 +67,9 @@ import { firebaseConfig } from './configs';
     BackgroundMode,
     ForegroundService,
     AngularFireAuthGuard,
+    Dialogs,
+    SpinnerDialog,
+    Toast,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
 import { Word } from '../../models/word.model';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { Storage } from '@ionic/storage';
 import { COLLECTIONS } from 'src/app/configs';
 import { FirestoreService } from '../firestore/firestore.service';
@@ -20,9 +19,10 @@ export class NotificationService {
   public initNotificationListener() {
     this.localNotifications.on('trigger')
         .subscribe(async data => {
-          const { id, trigger: { at }, data: { wordId } } = data;
+          const { id, data: { wordId } } = data;
+          const date = new Date();
           const user = await this.storage.get('user_uid');
-          await this.firestoreService.addDocument({ id, at, wordId, user }, COLLECTIONS.NOTIFICATIONS);
+          await this.firestoreService.addDocument({ id, date, wordId, user }, COLLECTIONS.NOTIFICATIONS);
         });
   }
 
@@ -31,7 +31,7 @@ export class NotificationService {
       this.localNotifications.schedule({
         id: new Date().getTime() + day,
         text: `${ word.en } => ${ word.ua }`,
-        trigger: { at: new Date(new Date().getDate() + day) },
+        trigger: { in: day, unit: ELocalNotificationTriggerUnit.DAY },
         title: 'Time to repeat',
         foreground: true,
         lockscreen: true,
@@ -39,8 +39,7 @@ export class NotificationService {
         autoClear: false,
         data: {
           wordId: word.id
-        },
-        silent: false
+        }
       });
     }
   }

@@ -2,19 +2,20 @@
 
 <ion-content #content scrollEvents="true">
 
-  <div class="spinner" *ngIf="isLoadingData">
-    <ion-spinner name="lines"></ion-spinner>
+  <div class="spinner">
+    <ion-spinner [@changeVisibilitySpinner]="animationStateSpinner" color="danger" name="lines"></ion-spinner>
   </div>
 
   <app-search
-    *ngIf="groupedWords.length"
+    [@changeVisibilitySearch]="animationStateSearch"
+    *ngIf="(groupedWordsAsync | async)?.length"
     (search)="onSearch($event)"
     (cancel)="onCancelSearch()">
   </app-search>
 
-  <div class="container">
-    <ion-card 
-      *ngFor="let group of groupedWords; let groupIndex = index"
+  <div [@changeVisibility]="animationState" class="container">
+    <ion-card
+      *ngFor="let group of groupedWordsAsync | async; let groupIndex = index"
       [ngStyle]="{'display': getVisibilityGroup(group) ? 'block': 'none'}">
       <div style="text-align: center">
         <ion-chip color="warning">
@@ -36,7 +37,7 @@
         </div>
       </ion-list>
     </ion-card>
-    <ion-card *ngIf="!groupedWords.length && !isLoadingData">
+    <ion-card *ngIf="!(groupedWordsAsync | async)?.length && (isLoadingData$ | async)">
       <ion-list lines="none">
         <ion-item><div style="margin: 0 auto;">There is nothing to show...</div></ion-item>
       </ion-list>
@@ -44,7 +45,7 @@
   </div>
 
   <ion-fab 
-    *ngIf="groupedWords.length || !isLoadingData" 
+    *ngIf="(groupedWordsAsync | async)?.length || !(isLoadingData$ | async)" 
     [hideOnscroll]="content" 
     vertical="bottom"
     horizontal="end" 

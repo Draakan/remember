@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
-import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
 
 @Component({
   selector: 'app-register',
@@ -19,8 +19,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private loaderService: LoaderService,
     private toastService: ToastService,
+    private spinnerDialog: SpinnerDialog,
   ) { }
 
   ngOnInit() {
@@ -33,16 +33,16 @@ export class RegisterComponent implements OnInit {
   }
 
   public async register() {
-    const loader = await this.loaderService.showLoader();
+    this.spinnerDialog.show(null, 'Please wait...', true);
     const result = await this.authService.SignUp(this.form.value);
 
     if (result === 'ok') {
-      await loader.dismiss();
+      this.spinnerDialog.hide();
       await this.router.navigate(['tabs/dictionary']);
       this.form.reset();
     } else {
-      await loader.dismiss();
-      await this.toastService.showToast('Something is going wrong...', 'danger');
+      this.spinnerDialog.hide();
+      this.toastService.showToast('Something is going wrong...', '#ec5252');
     }
   }
 

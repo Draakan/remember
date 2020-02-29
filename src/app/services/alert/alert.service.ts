@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Dialogs } from '@ionic-native/dialogs/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -7,25 +7,13 @@ import { AlertController } from '@ionic/angular';
 export class AlertService {
 
   constructor(
-    public alertCtrl: AlertController,
+    private dialogs: Dialogs
   ) { }
 
-  public async openAlert(action: string, handler) {
-    const alert = await this.alertCtrl.create({
-      header: 'Confirm',
-      message: `Do you want to ${action} it?`,
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: () => { }
-        },
-        {
-          text: 'Ok',
-          handler
-        }
-      ]
-    });
-    await alert.present();
-    return alert;
+  public async openAlert(action: string) {
+    return await this.dialogs.confirm(
+      `Do you want to ${action} it?`,
+      'Confirm'
+    );
   }
 }

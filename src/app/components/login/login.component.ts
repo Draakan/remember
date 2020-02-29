@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { LoaderService } from '../../services/loader/loader.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private router: Router,
     private loaderService: LoaderService,
     private toastService: ToastService,
+    private spinnerDialog: SpinnerDialog
   ) { }
 
   ngOnInit() {
@@ -35,16 +37,16 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   public async signIn() {
-    const loader = await this.loaderService.showLoader();
+    this.spinnerDialog.show(null, 'Please wait...', true);
     const result = await this.authService.signInWithEmailAndPassword(this.form.value);
 
     if (result === 'ok') {
       await this.router.navigate(['tabs/dictionary']);
-      await loader.dismiss();
+      this.spinnerDialog.hide();
       this.form.reset();
     } else {
-      await loader.dismiss();
-      await this.toastService.showToast('Bad credentials', 'danger');
+      this.spinnerDialog.hide();
+      this.toastService.showToast('Bad credentials', '#ec5252');
     }
   }
 

@@ -1,9 +1,3 @@
-::ng-deep .customToast {
-  border-radius: 80px;
-  text-align: center;
-  --box-shadow: none;
-}
-
 .preloader {
   display: flex;
   flex-direction: column;
@@ -13,4 +7,8 @@
   height: 100%;
   z-index: 100;
   background-color: white;
+
+  ion-spinner {
+    margin-top: 35rem;
+  }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { Toast } from '@ionic-native/toast/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -7,17 +7,20 @@ import { ToastController } from '@ionic/angular';
 export class ToastService {
 
   constructor(
-    private toastController: ToastController,
+    private toast: Toast
   ) { }
 
-  public async showToast(message: string, color: string) {
-    await (await this.toastController.create({
+  public showToast(message: string, color?: string) {
+    this.toast.showWithOptions({
       message,
-      color,
-      duration: 1500,
+      duration: 2000,
       position: 'bottom',
-      cssClass: 'customToast',
-    })).present();
+      styling: {
+        backgroundColor: color,
+        textColor: '#FFFFFF',
+        opacity: 1
+      }
+    }).toPromise();
   }
 
 }

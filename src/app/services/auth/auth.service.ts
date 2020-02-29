@@ -3,25 +3,25 @@ import { Router } from '@angular/router';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { LoaderService } from '../loader/loader.service';
 import { Storage } from '@ionic/storage';
 
 import { User } from '../../models/user.model';
 
 import { COLLECTIONS } from '../../configs';
-import { Subject } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/app.reducer';
+import { SetLogouted } from 'src/app/state/auth/auth.actions';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
-  public onLoggedOutUser$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router,
+    private store: Store<State>,
     private storage: Storage,
-    private loaderService: LoaderService,
   ) { }
 
   public async signInWithEmailAndPassword({ email, password }) {
@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   public async signOut() {
-    this.onLoggedOutUser$.next(true);
+    this.store.dispatch( new SetLogouted());
     this.router.navigate(['/login']);
     await this.afAuth.auth.signOut();
     await this.storage.clear();

@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 import { Group } from '../../models/group.model';
 import { Word } from '../../models/word.model';
 
@@ -7,18 +9,61 @@ import { NotificationService } from '../../services/notification/notification.se
 import { LoaderService } from '../../services/loader/loader.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { FirestoreService } from '../../services/firestore/firestore.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { StartLoadingWords, StopLoadingWords } from '../../state/ui/ui.actions';
+import { SetLogined } from '../../state/auth/auth.actions';
+import { CreateWord, UpdateWord, PayloadData, SetAllWords, DeleteWord } from 'src/app/state/words/words.actions';
+
+import { State, getIsLoading, getIsAuthState, getAllWordsState } from '../../app.reducer';
+import { skip } from 'rxjs/operators';
+
+// tslint:disable: variable-name
 
 @Component({
   selector: 'app-dictionary',
   templateUrl: 'dictionary.page.html',
-  styleUrls: ['dictionary.page.scss']
+  styleUrls: ['dictionary.page.scss'],
+  animations: [
+    trigger('changeVisibility', [
+      state('initial', style({
+        opacity: 0,
+      })),
+      state('final', style({
+        opacity: 1
+      })),
+      transition('initial=>final', animate('2500ms ease-in'))
+    ]),
+    trigger('changeVisibilitySearch', [
+      state('initial', style({
+        opacity: 0,
+      })),
+      state('final', style({
+        opacity: 1
+      })),
+      transition('initial=>final', animate('4000ms'))
+    ]),
+    trigger('changeVisibilitySpinner', [
+      state('initial', style({
+        opacity: 1,
+      })),
+      state('final', style({
+        opacity: 0,
+        display: 'none'
+      })),
+      transition('initial=>final', animate('2000ms'))
+    ]),
+  ]
 })
-export class DictionaryPage implements OnInit, AfterViewInit {
+export class DictionaryPage implements OnInit {
 
   @ViewChild('content') content;
 
-  public groupedWords: Group[] = [];
+  public groupedWordsAsync: Observable<Group[]>;
+
+  public isLoadingData$: Observable<boolean>;
 
   public isLoadingData: boolean = false;
   public isEditingData: boolean = false;
@@ -26,6 +71,9 @@ export class DictionaryPage implements OnInit, AfterViewInit {
 
   public selectedId: string = '';
   public searchValue: string = '';
+  public animationState: string = 'initial';
+  public animationStateSearch: string = 'initial';
+  public animationStateSpinner: string = 'initial';
 
   constructor(
     private toastService: ToastService,
@@ -33,18 +81,25 @@ export class DictionaryPage implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private modalService: ModalService,
     private firestoreService: FirestoreService,
-    private authService: AuthService,
+    private spinnerDialog: SpinnerDialog,
+    private store: Store<State>
   ) {}
 
   async ngOnInit() {
     this.init();
+    this.isLoadingData$ = this.store.select(getIsLoading);
+    this.store.select(getAllWordsState).pipe(skip(1))
+        .subscribe(_ => {
+          this.animationState = 'final';
+          this.animationStateSearch = 'final';
+          this.animationStateSpinner = 'final';
+        });
 
-    this.authService.onLoggedOutUser$
+    this.store.select(getIsAuthState)
         .subscribe(value => {
           if (value) {
-            this.groupedWords = [];
+            this.store.dispatch(new SetAllWords([]));
           }
-
           this.isLoggedOutUser = value;
         });
   }
@@ -52,21 +107,17 @@ export class DictionaryPage implements OnInit, AfterViewInit {
   async ionViewWillEnter() {
     if (this.isLoggedOutUser) {
       await this.init();
-      this.authService.onLoggedOutUser$.next(false);
+      this.store.dispatch(new SetLogined());
     }
   }
 
-  ngAfterViewInit() {
-    this.loaderService.preload.next(false);
-  }
-
   public async init() {
-    this.isLoadingData = true;
-    this.groupedWords = await (await this.firestoreService.getData()).toPromise();
-    await this.firestoreService.getUsersInfo();
-    setTimeout(() => {
-      this.isLoadingData = false;
-    }, 350);
+    this.store.dispatch(new StartLoadingWords());
+    await this.firestoreService.getData();
+    this.loaderService.preload.next(false);
+    this.firestoreService.getUsersInfo();
+    this.groupedWordsAsync = this.store.select(getAllWordsState).pipe(skip(1));
+    this.store.dispatch(new StopLoadingWords());
   }
 
   public async onAddButtonClick() {
@@ -74,7 +125,7 @@ export class DictionaryPage implements OnInit, AfterViewInit {
     let { data: { en, ua } } = await modal.onDidDismiss();
 
     if (en && ua) {
-      const loading = await this.loaderService.showLoader();
+      this.spinnerDialog.show(null, 'Please wait...', true);
 
       en = en.trim();
       ua = ua.trim();
@@ -85,33 +136,23 @@ export class DictionaryPage implements OnInit, AfterViewInit {
         const { id } = await this.firestoreService.addDocument(word);
 
         const newWord = new Word(id, en, ua, new Date());
-        const head = this.groupedWords[0];
 
-        if (this.groupedWords.length &&
-            newWord.date.getDay() === new Date(head.date).getDay() &&
-            newWord.date.getMonth() === new Date(head.date).getMonth()) {
-            head.words.push(newWord);
-        } else {
-          const newWordsArray: Word[] = [];
-          newWordsArray.push(newWord);
-          const newGroup = new Group(new Date().toString(), newWordsArray);
-          this.groupedWords.unshift(newGroup);
-        }
+        this.store.dispatch(new CreateWord(newWord));
 
         this.scheduleNotifications(newWord);
-        await loading.dismiss();
-        await this.showToast('New word has been added', 'success');
+
+        this.spinnerDialog.hide();
+        this.showToast('New word has been added', '#10dc60');
       } catch (err) {
         console.log(err);
-        await this.showToast('Server error', 'danger');
+        this.showToast('Server error', '#ec5252');
       }
     }
   }
 
-  public async onItemEdit(idToEdit: string, groupIndex: number, itemIndex: number) {
+  public async onItemEdit(word: Word, groupIndex: number, itemIndex: number) {
     try {
-      const selectedWords = this.groupedWords[groupIndex].words;
-      const { id, date, en: enToEdit, ua: uaToEdit } = selectedWords[itemIndex];
+      const { id, date, en: enToEdit, ua: uaToEdit } = word;
 
       const modal = await this.modalService.openModal(enToEdit, uaToEdit);
 
@@ -124,19 +165,16 @@ export class DictionaryPage implements OnInit, AfterViewInit {
         en = en.trim();
         ua = ua.trim();
 
-        await this.firestoreService.updateDocument(idToEdit, en, ua);
+        await this.firestoreService.updateDocument(word.id, en, ua);
 
-        this.groupedWords[groupIndex].words = [
-          ...selectedWords.slice(0, itemIndex),
-          { id, en, ua, date: new Date(date) },
-          ...selectedWords.slice(itemIndex + 1),
-        ];
+        this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date))));
+
         this.isEditingData = false;
-        await this.showToast('Word has been updated', 'warning');
+        this.showToast('Word has been updated', '#ffce00');
       }
     } catch (err) {
       console.log(err);
-      await this.showToast('Server error', 'danger');
+      this.showToast('Server error', '#ec5252');
     }
   }
 
@@ -147,17 +185,13 @@ export class DictionaryPage implements OnInit, AfterViewInit {
 
       await this.firestoreService.deleteDocument(id);
 
-      this.groupedWords[groupIndex].words.splice(itemIndex, 1);
-
-      if (this.groupedWords[groupIndex].words.length === 0) {
-        this.groupedWords.splice(groupIndex, 1);
-      }
+      this.store.dispatch(new DeleteWord(new PayloadData(groupIndex, itemIndex)));
 
       this.isEditingData = false;
-      await this.showToast('Word has been deleted', 'danger');
+      this.showToast('Word has been deleted', '#ec5252');
     } catch (err) {
       console.log(err);
-      await this.showToast('Server error', 'danger');
+      this.showToast('Server error', '#ec5252');
     }
   }
 
@@ -187,8 +221,8 @@ export class DictionaryPage implements OnInit, AfterViewInit {
     this.notificationService.scheduleNotifications(word);
   }
 
-  public async showToast(message: string, color: string) {
-    await this.toastService.showToast(message, color);
+  public showToast(message: string, color: string) {
+    this.toastService.showToast(message, color);
   }
 
 }
