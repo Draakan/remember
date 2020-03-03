@@ -36,11 +36,23 @@ export class FirestoreService {
         .pipe(
           take(1),
           map(data => data.map(doc => {
-            const { en, ua, date: { seconds } } = doc.payload.doc.data();
+            const { en, ua, date: { seconds }, repeatDates, count } = doc.payload.doc.data();
             const { id } = doc.payload.doc;
+
+            let dates = [];
+
+            if (repeatDates && repeatDates.length) {
+              dates = repeatDates.map(el => {
+                return {
+                  status: el.status,
+                  date: new Date(el.date.seconds * 1000)
+                };
+              });
+            }
+
             const unixToDate = new Date(seconds * 1000);
             const newDateStr = `${ unixToDate.getFullYear() }-${ unixToDate.getMonth() + 1 }-${ unixToDate.getDate() }`;
-            return new Word(id, en, ua, new Date(newDateStr));
+            return new Word(id, en, ua, new Date(newDateStr), repeatDates ? dates : undefined, count);
           })),
           map(words => {
             const array: Group[] = [];
@@ -56,7 +68,16 @@ export class FirestoreService {
   }
 
   public async getUsersInfo() {
-    this.user = Promise.resolve((await this.db.firestore.collection(`${ COLLECTIONS.USERS }`).doc(this._user_uid).get()).data());
+    let user = JSON.parse(await this.storage.get('user_info'));
+
+    if (user) {
+      this.user = Promise.resolve(user);
+      return;
+    }
+
+    user = (await this.db.firestore.collection(`${ COLLECTIONS.USERS }`).doc(this._user_uid).get()).data();
+    this.storage.set('user_info', JSON.stringify(user));
+    this.user = Promise.resolve(user);
   }
 
   public get user$() {
@@ -67,8 +88,8 @@ export class FirestoreService {
     return await this.db.collection<any>(collection ? collection : this._user_uid).add({ ...data });
   }
 
-  public async updateDocument(id: string, en, ua) {
-    return await (await this.db.doc<Word>(`${ this._user_uid }/${ id }`)).update({ en, ua });
+  public async updateDocument(id: string, en, ua, repeatDates, count) {
+    return await (await this.db.doc<Word>(`${ this._user_uid }/${ id }`)).update({ en, ua, repeatDates, count });
   }
 
   public async deleteDocument(id: string) {

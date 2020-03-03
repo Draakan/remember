@@ -14,6 +14,7 @@ export class WordItemComponent {
   @Input() word: Word;
 
   @Output() itemEdit = new EventEmitter<Word>();
+  @Output() itemClick = new EventEmitter<Word>();
   @Output() itemRemove = new EventEmitter<string>();
 
   constructor(
@@ -30,6 +31,10 @@ export class WordItemComponent {
 
   public onItemEdit(word: Word) {
     this.itemEdit.emit(word);
+  }
+
+  public onItemClick(word: Word) {
+    this.itemClick.emit(word);
   }
 
   public async onItemRemove(id: string) {

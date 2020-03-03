@@ -31,6 +31,7 @@
             [ngStyle]="{'display': getVisibilityWord(word.en) ? 'block': 'none'}"
             class="items"
             [word]="word"
+            (itemClick)="onItemClick($event)"
             (itemRemove)="onItemRemove($event, groupIndex, itemIndex)"
             (itemEdit)="onItemEdit($event, groupIndex, itemIndex)">
           </app-word-item>

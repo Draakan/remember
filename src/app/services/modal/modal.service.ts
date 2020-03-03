@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ModalComponent } from '../../components/modal/modal.component';
 import { ModalController } from '@ionic/angular';
 
 @Injectable({
@@ -11,10 +10,10 @@ export class ModalService {
     private modalCtrl: ModalController,
   ) { }
 
-  public async openModal(en?, ua?) {
+  public async openComponent(comp, data?) {
     const modal = await this.modalCtrl.create({
-      component: ModalComponent,
-      componentProps: { en, ua }
+      component: comp,
+      componentProps: { ...data }
     });
 
     await modal.present();

@@ -24,6 +24,7 @@ import { AppComponent } from './app.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { DetailComponent } from './components/detail/detail.component';
 
 // firebase
 import { AngularFireModule } from '@angular/fire';
@@ -41,9 +42,11 @@ import { reducers } from './app.reducer';
     ModalComponent,
     LoginComponent,
     RegisterComponent,
+    DetailComponent,
   ],
   entryComponents: [
     ModalComponent,
+    DetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +60,7 @@ import { reducers } from './app.reducer';
     IonicStorageModule.forRoot(),
     StoreModule.forRoot(reducers),
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
   ],
   providers: [
     StatusBar,

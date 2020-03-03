@@ -2,15 +2,16 @@ ion-item {
   --padding-start: 10px;
 
   .circle_stat {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     margin-right: 10px;
     font-size: 14px;
     border-radius: 50%;
-    background-color: lighten(#0cd1e8, 45);
+    background-color: var(--ion-color-secondary);
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white;
   }
 
   .ion-label {

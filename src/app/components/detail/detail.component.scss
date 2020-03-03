@@ -1,0 +1,38 @@
+ion-toolbar {
+  --background: var(--ion-color-danger);
+
+  ion-icon {
+    color: white;
+  }
+}
+
+ion-content {
+
+  ion-card {
+    border-radius: 10px;
+
+    &:first-child {
+      margin-top: 9rem;
+    }
+
+    ion-card-header {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .flex {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ion-checkbox {
+      &.checkbox-disabled {
+        opacity : 1;
+      }
+    }
+
+    .item-interactive-disabled:not(.item-multiple-inputs) .sc-ion-label-md-h {
+      opacity: 1 !important;
+    }
+  }
+}

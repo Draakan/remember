@@ -3,6 +3,8 @@ export class Word {
     public id: string,
     public en: string,
     public ua: string,
-    public date: Date
+    public date: Date,
+    public repeatDates?: { status: boolean, date: Date }[],
+    public count?: number,
   ) { }
 }

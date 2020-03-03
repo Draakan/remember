@@ -1,0 +1,29 @@
+<app-header [title]="title"></app-header>
+
+<ion-content>
+  <ion-avatar>
+    <img src="../../../assets/avatar.png">
+  </ion-avatar>
+  <ion-card>
+    <ion-list lines="full">
+      <ion-item>
+        <ion-icon slot="start" name="person-outline"></ion-icon>
+        <ion-label>{{ (firestoreService.user$ | async)?.name }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="mail-outline"></ion-icon>
+        <ion-label>{{ (firestoreService.user$ | async)?.email }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start" name="today-outline"></ion-icon>
+        <ion-label>{{ getDate((firestoreService.user$ | async)?.date.seconds) | date:'longDate' }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+  <div style="text-align: center">
+    <ion-button
+      (click)="signOut()"
+      color="danger">Logout
+    </ion-button>
+  </div>
+</ion-content>

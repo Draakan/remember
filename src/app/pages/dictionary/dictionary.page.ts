@@ -19,6 +19,8 @@ import { CreateWord, UpdateWord, PayloadData, SetAllWords, DeleteWord } from 'sr
 
 import { State, getIsLoading, getIsAuthState, getAllWordsState } from '../../app.reducer';
 import { skip } from 'rxjs/operators';
+import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { DetailComponent } from 'src/app/components/detail/detail.component';
 
 // tslint:disable: variable-name
 
@@ -113,15 +115,15 @@ export class DictionaryPage implements OnInit {
 
   public async init() {
     this.store.dispatch(new StartLoadingWords());
-    await this.firestoreService.getData();
     this.loaderService.preload.next(false);
+    await this.firestoreService.getData();
     this.firestoreService.getUsersInfo();
     this.groupedWordsAsync = this.store.select(getAllWordsState).pipe(skip(1));
     this.store.dispatch(new StopLoadingWords());
   }
 
   public async onAddButtonClick() {
-    const modal = await this.modalService.openModal();
+    const modal = await this.modalService.openComponent(ModalComponent);
     let { data: { en, ua } } = await modal.onDidDismiss();
 
     if (en && ua) {
@@ -130,12 +132,29 @@ export class DictionaryPage implements OnInit {
       en = en.trim();
       ua = ua.trim();
 
-      const word = { en, ua, date: new Date() };
+      const today = new Date();
+
+      const repeatDates = [
+        {
+          status: false,
+          date:  new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+        },
+        {
+          status: false,
+          date:   new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3)
+        },
+        {
+          status: false,
+          date:  new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)
+        }
+      ];
+
+      const wordToSave = { en, ua, date: new Date(), repeatDates, count: 0 };
 
       try {
-        const { id } = await this.firestoreService.addDocument(word);
+        const { id } = await this.firestoreService.addDocument(wordToSave);
 
-        const newWord = new Word(id, en, ua, new Date());
+        const newWord = new Word(id, en, ua, new Date(), repeatDates, 0);
 
         this.store.dispatch(new CreateWord(newWord));
 
@@ -152,9 +171,9 @@ export class DictionaryPage implements OnInit {
 
   public async onItemEdit(word: Word, groupIndex: number, itemIndex: number) {
     try {
-      const { id, date, en: enToEdit, ua: uaToEdit } = word;
+      const { id, date, en: enToEdit, ua: uaToEdit, repeatDates, count } = word;
 
-      const modal = await this.modalService.openModal(enToEdit, uaToEdit);
+      const modal = await this.modalService.openComponent(ModalComponent, { en: enToEdit, ua: uaToEdit });
 
       let { data: { en, ua } } = await modal.onDidDismiss();
 
@@ -165,9 +184,9 @@ export class DictionaryPage implements OnInit {
         en = en.trim();
         ua = ua.trim();
 
-        await this.firestoreService.updateDocument(word.id, en, ua);
+        await this.firestoreService.updateDocument(id, en, ua, repeatDates, count);
 
-        this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date))));
+        this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date, repeatDates, count))));
 
         this.isEditingData = false;
         this.showToast('Word has been updated', '#ffce00');
@@ -192,6 +211,12 @@ export class DictionaryPage implements OnInit {
     } catch (err) {
       console.log(err);
       this.showToast('Server error', '#ec5252');
+    }
+  }
+
+  public onItemClick(word: Word) {
+    if (word.repeatDates && word.repeatDates.length) {
+      this.modalService.openComponent(DetailComponent, { word });
     }
   }
 
