@@ -17,6 +17,9 @@ import { ForegroundService } from '@ionic-native/foreground-service/ngx';
 import { Dialogs } from '@ionic-native/dialogs/ngx';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
+import { Network } from '@ionic-native/network/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
 import { LayoutModule } from './layout/layout.module';
 import { StoreModule } from '@ngrx/store';
 
@@ -73,6 +76,8 @@ import { reducers } from './app.reducer';
     Dialogs,
     SpinnerDialog,
     Toast,
+    Network,
+    ScreenOrientation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

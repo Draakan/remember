@@ -5,6 +5,7 @@ import { LoaderService } from '../../services/loader/loader.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
+import { TOAST_COLORS } from 'src/app/configs';
 
 @Component({
   selector: 'app-login',
@@ -46,7 +47,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.form.reset();
     } else {
       this.spinnerDialog.hide();
-      this.toastService.showToast('Bad credentials', '#ec5252');
+      this.toastService.showToast('Bad credentials', TOAST_COLORS.DANGER);
     }
   }
 

@@ -17,10 +17,12 @@ import { StartLoadingWords, StopLoadingWords } from '../../state/ui/ui.actions';
 import { SetLogined } from '../../state/auth/auth.actions';
 import { CreateWord, UpdateWord, PayloadData, SetAllWords, DeleteWord } from 'src/app/state/words/words.actions';
 
-import { State, getIsLoading, getIsAuthState, getAllWordsState } from '../../app.reducer';
+import { State, getIsLoading, getIsAuthState, getAllWordsState, getIsOnlineState } from '../../app.reducer';
 import { skip } from 'rxjs/operators';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { DetailComponent } from 'src/app/components/detail/detail.component';
+
+import { TOAST_COLORS } from 'src/app/configs';
 
 // tslint:disable: variable-name
 
@@ -77,6 +79,8 @@ export class DictionaryPage implements OnInit {
   public animationStateSearch: string = 'initial';
   public animationStateSpinner: string = 'initial';
 
+  private isOnline: boolean = true;
+
   constructor(
     private toastService: ToastService,
     private notificationService: NotificationService,
@@ -90,6 +94,8 @@ export class DictionaryPage implements OnInit {
   async ngOnInit() {
     this.init();
     this.isLoadingData$ = this.store.select(getIsLoading);
+    this.store.select(getIsOnlineState)
+        .subscribe(status => this.isOnline = status);
     this.store.select(getAllWordsState).pipe(skip(1))
         .subscribe(_ => {
           this.animationState = 'final';
@@ -115,14 +121,19 @@ export class DictionaryPage implements OnInit {
 
   public async init() {
     this.store.dispatch(new StartLoadingWords());
-    this.loaderService.preload.next(false);
     await this.firestoreService.getData();
+    this.loaderService.preload.next(false);
     this.firestoreService.getUsersInfo();
     this.groupedWordsAsync = this.store.select(getAllWordsState).pipe(skip(1));
     this.store.dispatch(new StopLoadingWords());
   }
 
   public async onAddButtonClick() {
+    if (!this.isOnline) {
+      this.toastService.showToast('You are offline', TOAST_COLORS.WARNING);
+      return;
+    }
+
     const modal = await this.modalService.openComponent(ModalComponent);
     let { data: { en, ua } } = await modal.onDidDismiss();
 
@@ -161,10 +172,10 @@ export class DictionaryPage implements OnInit {
         this.scheduleNotifications(newWord);
 
         this.spinnerDialog.hide();
-        this.showToast('New word has been added', '#10dc60');
+        this.showToast('New word has been added', TOAST_COLORS.SUCCESS);
       } catch (err) {
         console.log(err);
-        this.showToast('Server error', '#ec5252');
+        this.showToast('Server error', TOAST_COLORS.DANGER);
       }
     }
   }
@@ -189,11 +200,11 @@ export class DictionaryPage implements OnInit {
         this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date, repeatDates, count))));
 
         this.isEditingData = false;
-        this.showToast('Word has been updated', '#ffce00');
+        this.showToast('Word has been updated', TOAST_COLORS.WARNING);
       }
     } catch (err) {
       console.log(err);
-      this.showToast('Server error', '#ec5252');
+      this.showToast('Server error', TOAST_COLORS.DANGER);
     }
   }
 
@@ -207,10 +218,10 @@ export class DictionaryPage implements OnInit {
       this.store.dispatch(new DeleteWord(new PayloadData(groupIndex, itemIndex)));
 
       this.isEditingData = false;
-      this.showToast('Word has been deleted', '#ec5252');
+      this.showToast('Word has been deleted', TOAST_COLORS.DANGER);
     } catch (err) {
       console.log(err);
-      this.showToast('Server error', '#ec5252');
+      this.showToast('Server error', TOAST_COLORS.DANGER);
     }
   }
 

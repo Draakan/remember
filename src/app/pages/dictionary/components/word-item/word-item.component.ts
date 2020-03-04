@@ -2,6 +2,10 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { AlertService } from '../../../../services/alert/alert.service';
 import { Word } from '../../../../models/word.model';
+import { Store } from '@ngrx/store';
+import { State, getIsOnlineState } from 'src/app/app.reducer';
+import { ToastService } from 'src/app/services/toast/toast.service';
+import { TOAST_COLORS } from 'src/app/configs';
 
 @Component({
   selector: 'app-word-item',
@@ -17,10 +21,17 @@ export class WordItemComponent {
   @Output() itemClick = new EventEmitter<Word>();
   @Output() itemRemove = new EventEmitter<string>();
 
+  private isOnline: boolean = true;
+
   constructor(
-    private alertService: AlertService,
     public tts: TextToSpeech,
-  ) { }
+    private alertService: AlertService,
+    private toastService: ToastService,
+    private store: Store<State>
+  ) {
+    this.store.select(getIsOnlineState)
+        .subscribe(status => this.isOnline = status);
+  }
 
   public async speak(word: string) {
     await this.tts.speak({
@@ -30,6 +41,11 @@ export class WordItemComponent {
   }
 
   public onItemEdit(word: Word) {
+    if (!this.isOnline) {
+      this.toastService.showToast('You are offline', TOAST_COLORS.WARNING);
+      return;
+    }
+
     this.itemEdit.emit(word);
   }
 
@@ -38,6 +54,11 @@ export class WordItemComponent {
   }
 
   public async onItemRemove(id: string) {
+    if (!this.isOnline) {
+      this.toastService.showToast('You are offline', TOAST_COLORS.WARNING);
+      return;
+    }
+
     const result = await this.alertService.openAlert('delete');
 
     if (result === 1) {

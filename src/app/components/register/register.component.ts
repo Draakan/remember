@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
+import { TOAST_COLORS } from 'src/app/configs';
 
 @Component({
   selector: 'app-register',
@@ -42,7 +43,7 @@ export class RegisterComponent implements OnInit {
       this.form.reset();
     } else {
       this.spinnerDialog.hide();
-      this.toastService.showToast('Something is going wrong...', '#ec5252');
+      this.toastService.showToast('Something is going wrong...', TOAST_COLORS.DANGER);
     }
   }
 
