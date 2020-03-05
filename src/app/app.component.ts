@@ -37,13 +37,13 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(_ => {
-    this.splashScreen.hide();
-    this.statusBar.styleLightContent();
-    this.statusBar.backgroundColorByHexString(this._statusBarColor);
-    this.notificationService.initNotificationListener();
-    this.networkService.initNetworkListener();
-    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-    this.backgroundMode.enable();
+      this.splashScreen.hide();
+      this.statusBar.styleLightContent();
+      this.statusBar.backgroundColorByHexString(this._statusBarColor);
+      this.notificationService.initNotificationListener();
+      this.networkService.initNetworkListener();
+      this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+      this.backgroundMode.enable();
     });
   }
 }

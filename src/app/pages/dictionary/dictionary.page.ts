@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Group } from '../../models/group.model';
 import { Word } from '../../models/word.model';
@@ -22,7 +21,8 @@ import { skip } from 'rxjs/operators';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
 import { DetailComponent } from 'src/app/components/detail/detail.component';
 
-import { TOAST_COLORS } from 'src/app/configs';
+import { TOAST_COLORS, DATES_TO_REPEAT } from 'src/app/configs';
+import { Animations } from 'src/app/animations';
 
 // tslint:disable: variable-name
 
@@ -31,34 +31,9 @@ import { TOAST_COLORS } from 'src/app/configs';
   templateUrl: 'dictionary.page.html',
   styleUrls: ['dictionary.page.scss'],
   animations: [
-    trigger('changeVisibility', [
-      state('initial', style({
-        opacity: 0,
-      })),
-      state('final', style({
-        opacity: 1
-      })),
-      transition('initial=>final', animate('2500ms ease-in'))
-    ]),
-    trigger('changeVisibilitySearch', [
-      state('initial', style({
-        opacity: 0,
-      })),
-      state('final', style({
-        opacity: 1
-      })),
-      transition('initial=>final', animate('4000ms'))
-    ]),
-    trigger('changeVisibilitySpinner', [
-      state('initial', style({
-        opacity: 1,
-      })),
-      state('final', style({
-        opacity: 0,
-        display: 'none'
-      })),
-      transition('initial=>final', animate('2000ms'))
-    ]),
+    Animations.changeVisibilityDictionary,
+    Animations.changeVisibilitySearch,
+    Animations.changeVisibilitySpinner,
   ]
 })
 export class DictionaryPage implements OnInit {
@@ -143,22 +118,14 @@ export class DictionaryPage implements OnInit {
       en = en.trim();
       ua = ua.trim();
 
-      const today = new Date();
+      const today = new Date(), repeatDates = [];
 
-      const repeatDates = [
-        {
+      for (const day of DATES_TO_REPEAT) {
+        repeatDates.push({
           status: false,
-          date:  new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
-        },
-        {
-          status: false,
-          date:   new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3)
-        },
-        {
-          status: false,
-          date:  new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)
-        }
-      ];
+          date:  new Date(today.getFullYear(), today.getMonth(), today.getDate() + day)
+        });
+      }
 
       const wordToSave = { en, ua, date: new Date(), repeatDates, count: 0 };
 

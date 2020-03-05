@@ -3,7 +3,11 @@
 <ion-content #content scrollEvents="true">
 
   <div class="spinner">
-    <ion-spinner [@changeVisibilitySpinner]="animationStateSpinner" color="danger" name="lines"></ion-spinner>
+    <ion-spinner
+      [@changeVisibilitySpinner]="animationStateSpinner"
+      color="danger"
+      name="lines">
+    </ion-spinner>
   </div>
 
   <app-search
@@ -13,7 +17,7 @@
     (cancel)="onCancelSearch()">
   </app-search>
 
-  <div [@changeVisibility]="animationState" class="container">
+  <div [@changeVisibilityDictionary]="animationState" class="container">
     <ion-card
       *ngFor="let group of groupedWordsAsync | async; let groupIndex = index"
       [ngStyle]="{'display': getVisibilityGroup(group) ? 'block': 'none'}">

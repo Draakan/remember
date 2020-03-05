@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
 import { Word } from '../../models/word.model';
 import { Storage } from '@ionic/storage';
-import { COLLECTIONS } from 'src/app/configs';
+import { COLLECTIONS, DATES_TO_REPEAT } from 'src/app/configs';
 import { FirestoreService } from '../firestore/firestore.service';
 import { Store } from '@ngrx/store';
 import { State, getAllWordsState } from 'src/app/app.reducer';
@@ -28,7 +28,11 @@ export class NotificationService {
         .subscribe(async data => {
           const today = new Date();
           try {
-            const state = await this.store.select(getAllWordsState).pipe(skip(1), take(1)).toPromise();
+            let state = await this.store.select(getAllWordsState).pipe(take(1)).toPromise();
+
+            if (state && !state.length) {
+              state = await this.store.select(getAllWordsState).pipe(skip(1), take(1)).toPromise();
+            }
 
             const { id: notificationId, data: { word: { id, date, en, ua } } } = data;
 
@@ -49,10 +53,13 @@ export class NotificationService {
             }
 
             const editedStatuses = state[groupIndex].words[itemIndex].repeatDates.map(el => {
-              if (el.date.getFullYear() === today.getFullYear() &&
+              if ((el.date.getFullYear() === today.getFullYear() &&
                   el.date.getMonth() === today.getMonth() &&
-                  el.date.getDay() === today.getDay()) {
-                el.status = true;
+                  el.date.getDate() === today.getDate()) ||
+                  (el.date.getFullYear() < today.getFullYear() ||
+                  el.date.getMonth() < today.getMonth() ||
+                  el.date.getDate() < today.getDate())) {
+                  el.status = true;
               }
               return el;
             });
@@ -74,7 +81,7 @@ export class NotificationService {
   }
 
   public scheduleNotifications(word: Word) {
-    for (const day of [1, 3, 5]) {
+    for (const day of DATES_TO_REPEAT) {
       this.localNotifications.schedule({
         id: new Date().getTime() + day,
         text: `${ word.en } => ${ word.ua }`,

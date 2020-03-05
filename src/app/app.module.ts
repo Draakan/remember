@@ -20,14 +20,10 @@ import { Toast } from '@ionic-native/toast/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
-import { LayoutModule } from './layout/layout.module';
+import { ComponentsModule } from './components/components.module';
 import { StoreModule } from '@ngrx/store';
 
 import { AppComponent } from './app.component';
-import { ModalComponent } from './components/modal/modal.component';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { DetailComponent } from './components/detail/detail.component';
 
 // firebase
 import { AngularFireModule } from '@angular/fire';
@@ -42,19 +38,11 @@ import { reducers } from './app.reducer';
 @NgModule({
   declarations: [
     AppComponent,
-    ModalComponent,
-    LoginComponent,
-    RegisterComponent,
-    DetailComponent,
-  ],
-  entryComponents: [
-    ModalComponent,
-    DetailComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    LayoutModule,
+    ComponentsModule,
     AppRoutingModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
