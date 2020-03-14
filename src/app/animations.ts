@@ -29,4 +29,23 @@ export const Animations = {
     })),
     transition('initial=>final', animate('2000ms'))
   ]),
+  changeVisibilitySpinnerSet: trigger('changeVisibilitySpinnerSet', [
+    state('initial', style({
+      opacity: 1,
+    })),
+    state('final', style({
+      opacity: 0,
+      display: 'none'
+    })),
+    transition('initial=>final', animate('1000ms'))
+  ]),
+  changeVisibilitySet: trigger('changeVisibilitySet', [
+    state('initial', style({
+      opacity: 0,
+    })),
+    state('final', style({
+      opacity: 1
+    })),
+    transition('initial=>final', animate('1000ms ease-in'))
+  ]),
 };

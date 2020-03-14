@@ -1,0 +1,49 @@
+ion-content {
+  ion-col {
+    &:nth-child(1n) {
+      padding-right: 0;
+    }
+    &:nth-child(2n) {
+      padding-left: 0;
+    }
+  }
+
+  ion-card {
+    &:not(:first-child) {
+      margin-top: 9px;
+      margin-bottom: 0;
+    }
+
+    &:not(:nth-child(2n)) {
+      margin-top: 9px;
+      margin-bottom: 0;
+    }
+
+    border-radius: 10px;
+    height: 10rem;
+    text-align: center;
+
+    .container_center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      ion-label {
+        font-size: 32px;
+      }
+    }
+
+    .progress_label {
+      position: absolute;
+      bottom: 8px;
+      left: 2.5rem;
+    }
+
+    ion-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }    
+  }
+}

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
+
 import { Storage } from '@ionic/storage';
 import { Word } from '../../models/word.model';
 import { Group } from '../../models/group.model';
@@ -10,6 +12,7 @@ import { COLLECTIONS } from 'src/app/configs';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/app.reducer';
 import { SetAllWords } from 'src/app/state/words/words.actions';
+import { WordSet } from 'src/app/models/set';
 
 // tslint:disable: variable-name
 
@@ -24,6 +27,7 @@ export class FirestoreService {
 
   constructor(
     private db: AngularFirestore,
+    private fireStorage: AngularFireStorage,
     private storage: Storage,
     private store: Store<State>
   ) { }
@@ -67,6 +71,32 @@ export class FirestoreService {
           })).toPromise();
   }
 
+  public async getSet(collection: string) {
+    return this.db.collection<any>(collection)
+        .snapshotChanges()
+        .pipe(
+          take(1),
+          map(data => data.map(doc => {
+            const { en, ua, date: { seconds }, repeatDates, count, isLearn, example } = doc.payload.doc.data();
+            const { id } = doc.payload.doc;
+
+            let dates = [];
+
+            if (repeatDates && repeatDates.length) {
+              dates = repeatDates.map(el => {
+                return {
+                  status: el.status,
+                  date: new Date(el.date.seconds * 1000)
+                };
+              });
+            }
+
+            const unixToDate = new Date(seconds * 1000);
+            const newDateStr = `${ unixToDate.getFullYear() }-${ unixToDate.getMonth() + 1 }-${ unixToDate.getDate() }`;
+            return new WordSet(id, en, ua, new Date(newDateStr), repeatDates, count, isLearn, example);
+          }))).toPromise();
+  }
+
   public async getUsersInfo() {
     let user = JSON.parse(await this.storage.get('user_info'));
 
@@ -90,6 +120,10 @@ export class FirestoreService {
 
   public async updateDocument(id: string, en, ua, repeatDates, count) {
     return await (await this.db.doc<Word>(`${ this._user_uid }/${ id }`)).update({ en, ua, repeatDates, count });
+  }
+
+  public async updateWordSet(collection: string, id: string, isLearn: boolean, repeatDates) {
+    return await (await this.db.doc<WordSet>(`${ collection }/${ id }`)).update({ isLearn, repeatDates });
   }
 
   public async deleteDocument(id: string) {

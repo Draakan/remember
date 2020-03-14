@@ -1,12 +1,12 @@
 <ion-item-sliding>
-  <ion-item>
+  <ion-item (click)="onItemClick(word)">
     <div class="circle_stat">{{ word.repeatDates && word.repeatDates.length ? word.count : '&#8734;' }}</div>
-    <ion-label class="ion-label" (click)="onItemClick(word)">
+    <ion-label class="ion-label">
       <span class="dark-blue">{{ word.en }}</span>
       <span>{{ word.ua }}</span>
     </ion-label>
     <ion-button
-      (click)="speak(word.en)"
+      (click)="speak(word.en);$event.stopPropagation();"
       slot="end" 
       fill="clear"
       class="only-icon">

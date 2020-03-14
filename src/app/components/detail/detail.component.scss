@@ -11,10 +11,6 @@ ion-content {
   ion-card {
     border-radius: 10px;
 
-    &:first-child {
-      margin-top: 9rem;
-    }
-
     ion-card-header {
       text-align: center;
       font-size: 18px;
@@ -35,4 +31,8 @@ ion-content {
       opacity: 1 !important;
     }
   }
+}
+
+.center {
+  text-align: center;
 }

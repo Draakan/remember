@@ -2,26 +2,27 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
-
+import { IonicStorageModule } from '@ionic/storage';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StoreModule } from '@ngrx/store';
 
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ComponentsModule } from './components/components.module';
+
+// native
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { IonicStorageModule } from '@ionic/storage';
 import { ForegroundService } from '@ionic-native/foreground-service/ngx';
 import { Dialogs } from '@ionic-native/dialogs/ngx';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-
-import { ComponentsModule } from './components/components.module';
-import { StoreModule } from '@ngrx/store';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 import { AppComponent } from './app.component';
 
@@ -30,6 +31,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAuthGuard, AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 
 // config
 import { firebaseConfig } from './configs';
@@ -47,6 +49,7 @@ import { reducers } from './app.reducer';
     ReactiveFormsModule,
     AngularFireAuthModule,
     AngularFireAuthGuardModule,
+    AngularFireStorageModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
     StoreModule.forRoot(reducers),
@@ -66,6 +69,7 @@ import { reducers } from './app.reducer';
     Toast,
     Network,
     ScreenOrientation,
+    AppVersion,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { State } from 'src/app/app.reducer';
-import { FirestoreService } from 'src/app/services/firestore/firestore.service';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -11,12 +9,9 @@ import { FirestoreService } from 'src/app/services/firestore/firestore.service';
 export class TabsPage implements OnInit {
 
   constructor(
-    private store: Store<{ ui: State }>,
-    private firestoreService: FirestoreService
+    public menuCtrl: MenuController,
   ) {}
 
-  ngOnInit() {
-    /* this.store.dispatch({ type: 'START_LOADING' }); */
-  }
+  ngOnInit() {}
 
 }

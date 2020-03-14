@@ -221,7 +221,7 @@ export class DictionaryPage implements OnInit {
   }
 
   public scheduleNotifications(word: Word) {
-    this.notificationService.scheduleNotifications(word);
+    this.notificationService.scheduleNotifications(word, 'custom');
   }
 
   public showToast(message: string, color: string) {

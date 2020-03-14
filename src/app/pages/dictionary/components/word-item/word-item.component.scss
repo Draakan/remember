@@ -25,5 +25,9 @@ ion-item {
   .only-icon {
     margin-left: 2px;
     margin-right: -15px;
+    height: 3rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom-right-radius: 15px;
   }
 }

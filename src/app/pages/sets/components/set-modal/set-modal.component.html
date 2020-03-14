@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Phrasal verbs
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="spinner">
+    <ion-spinner
+      [@changeVisibilitySpinnerSet]="animationStateSpinner"
+      color="danger"
+      name="lines">
+    </ion-spinner>
+  </div>
+
+  <div [@changeVisibilitySet]="animationState">
+    <h2>{{ name }}</h2>
+    <ion-card>
+      <ion-list lines="full">
+        <ion-item *ngFor="let word of wordsOfSet" (click)="onItemClick(word)">
+          <div *ngIf="word.isLearn" class="circle_stat">{{ word.count }}</div>
+          <ion-spinner *ngIf="isLoading && selectedId === word.id" name="lines-small"></ion-spinner>
+          <ion-button
+            *ngIf="!word.isLearn && selectedId !== word.id"
+            (click)="toLearn(word);$event.stopPropagation();"
+            slot="start" 
+            fill="clear">
+            <ion-icon slot="icon-only" color="success" name="arrow-up-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-label class="ion-label">
+            <span class="dark-blue">{{ word.en }}</span>
+            <span>{{ word.ua }}</span>
+          </ion-label>
+          <ion-button
+            (click)="speak(word.en);$event.stopPropagation();"
+            slot="end" 
+            fill="clear"
+            class="only-icon">
+            <ion-icon slot="icon-only" color="danger" name="play-circle"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,23 @@
+<app-header [title]="title"></app-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let set of sets">
+        <ion-card (click)="onSetClick(set.name)">
+          <ion-chip color="warning">
+            <ion-label color="dark">Phrasal Verbs</ion-label>
+          </ion-chip>
+          <ion-chip color="secondary">
+            <ion-label color="dark">{{ set.number }}</ion-label>
+          </ion-chip>
+          <div class="container_center">
+            <ion-label color="dark">{{ set.name }}</ion-label>
+          </div>
+          <ion-label class="progress_label">Progress: 0%</ion-label>
+          <ion-progress-bar value="0" color="success"></ion-progress-bar>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

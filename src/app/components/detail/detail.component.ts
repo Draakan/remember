@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Word } from 'src/app/models/word.model';
 
 @Component({
   selector: 'app-detail',
@@ -9,7 +8,7 @@ import { Word } from 'src/app/models/word.model';
 })
 export class DetailComponent {
 
-  @Input() word: Word;
+  @Input() word: any;
 
   public title: string = 'Details';
 

@@ -16,3 +16,25 @@
     margin-top: 25rem;
   }
 }
+
+ion-toolbar {
+  text-align: center;
+  --background: var(--ion-color-danger);
+
+  ion-title {
+    color: white;
+  }
+}
+
+ion-menu {
+  .app-name {
+    position: absolute;
+    bottom: 1rem;
+    left: 5.3rem;
+    font-size: 30px;
+    background-image: linear-gradient(90deg, rgba(236,82,82,1) 0%, rgba(41,48,59,1) 100%);
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}

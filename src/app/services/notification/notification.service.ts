@@ -25,76 +25,87 @@ export class NotificationService {
 
   public initNotificationListener() {
     this.localNotifications.on('trigger')
-        .subscribe(async data => {
-          const today = new Date();
-          try {
-            let state = await this.store.select(getAllWordsState).pipe(take(1)).toPromise();
-
-            if (state && !state.length) {
-              state = await this.store.select(getAllWordsState).pipe(skip(1), take(1)).toPromise();
-            }
-
-            const { id: notificationId, data: { word: { id, date, en, ua } } } = data;
-
-            let groupIndex, itemIndex;
-
-            for (let i = 0; i < state.length; i++) {
-              for (let k = 0; k < state[i].words.length; k++) {
-                if (state[i].words[k].id === id) {
-                  groupIndex = i;
-                  itemIndex = k;
-                  break;
-                }
-              }
-
-              if (groupIndex && itemIndex) {
-                break;
-              }
-            }
-
-            const editedStatuses = state[groupIndex].words[itemIndex].repeatDates.map(el => {
-              if ((el.date.getFullYear() === today.getFullYear() &&
-                  el.date.getMonth() === today.getMonth() &&
-                  el.date.getDate() === today.getDate()) ||
-                  (el.date.getFullYear() < today.getFullYear() ||
-                  el.date.getMonth() < today.getMonth() ||
-                  el.date.getDate() < today.getDate())) {
-                  el.status = true;
-              }
-              return el;
-            });
-
-            const editedCount = editedStatuses.filter(el => el.status === true).length;
-
-            this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date, editedStatuses, editedCount))));
-
-            await this.firestoreService.updateDocument(id, en, ua, editedStatuses, editedCount);
-
-            const user = await this.storage.get('user_uid');
-            await this.firestoreService.addDocument({ notificationId, date, id, user }, COLLECTIONS.NOTIFICATIONS);
-          } catch ({ message }) {
-            console.log(message);
-            const user = await this.storage.get('user_uid');
-            await this.firestoreService.addDocument({ user, message, date: today }, COLLECTIONS.ERRORS);
-          }
+        .subscribe(data => {
+          this.updateCustomWord(data.data);
         });
   }
 
-  public scheduleNotifications(word: Word) {
+  public async updateCustomWord(data) {
+    const today = new Date();
+    try {
+      let state = await this.store.select(getAllWordsState).pipe(take(1)).toPromise();
+
+      if (state && !state.length) {
+        state = await this.store.select(getAllWordsState).pipe(skip(1), take(1)).toPromise();
+      }
+
+      const { word: { id, date, en, ua } } = data;
+
+      let groupIndex, itemIndex;
+
+      for (let i = 0; i < state.length; i++) {
+        for (let k = 0; k < state[i].words.length; k++) {
+          if (state[i].words[k].id === id) {
+            groupIndex = i;
+            itemIndex = k;
+            break;
+          }
+        }
+
+        if (groupIndex && itemIndex) {
+          break;
+        }
+      }
+
+      const editedStatuses = state[groupIndex].words[itemIndex].repeatDates.map(el => {
+        if ((el.date.getFullYear() === today.getFullYear() &&
+            el.date.getMonth() === today.getMonth() &&
+            el.date.getDate() === today.getDate()) ||
+            (el.date.getFullYear() < today.getFullYear() ||
+            el.date.getMonth() < today.getMonth() ||
+            el.date.getDate() < today.getDate())) {
+            el.status = true;
+        }
+        return el;
+      });
+
+      const editedCount = editedStatuses.reduce((acc, cur) => cur.status ? acc + 1 : acc, 0);
+
+      this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date, editedStatuses, editedCount))));
+
+      this.firestoreService.updateDocument(id, en, ua, editedStatuses, editedCount);
+    } catch ({ message }) {
+      console.log(message);
+      const user = await this.storage.get('user_uid');
+      await this.firestoreService.addDocument({ user, message, date: today }, COLLECTIONS.ERRORS);
+    }
+  }
+
+  public async scheduleNotifications(word: Word, kind: string) {
+    const today = new Date();
+
     for (const day of DATES_TO_REPEAT) {
+      const id = today.getTime() + day;
+
       this.localNotifications.schedule({
-        id: new Date().getTime() + day,
+        id,
         text: `${ word.en } => ${ word.ua }`,
         trigger: { in: day, unit: ELocalNotificationTriggerUnit.DAY },
         title: 'Time to repeat',
         lockscreen: true,
+        foreground: true,
         smallIcon: 'file://assets/notification_icon.png',
         autoClear: false,
         data: {
-          word
+          word,
+          kind
         }
       });
     }
+
+    setTimeout(() => {
+      this.localNotifications.getAll().then(notifications => this.storage.set(COLLECTIONS.NOTIFICATIONS, notifications));
+    }, 1000);
   }
 
 }

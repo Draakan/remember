@@ -1,0 +1,26 @@
+<app-header [title]="title"></app-header>
+
+<ion-content>
+  <ion-card>
+    <div style="display: block;margin-bottom: .5rem;">
+      <canvas
+        baseChart
+        [labels]="doughnutChartLabels"
+        [data]="doughnutChartData"
+        [chartType]="doughnutChartType">
+      </canvas>
+    </div>
+  </ion-card>
+  <ion-card>
+    <div style="display: block">
+      <canvas 
+        baseChart
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [options]="barChartOptions"
+        [legend]="barChartLegend"
+        [chartType]="barChartType">
+      </canvas>
+    </div>
+  </ion-card>
+</ion-content>

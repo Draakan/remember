@@ -18,12 +18,22 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab2',
+        path: 'sets',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+              import('../sets/sets.module').then(m => m.SetsPageModule)
+          }
+        ]
+      },
+      {
+        path: 'statistics',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../statistics/statistics.module').then(m => m.StatiscticsPageModule)
           }
         ]
       },
