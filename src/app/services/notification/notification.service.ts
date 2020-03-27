@@ -8,7 +8,6 @@ import { Store } from '@ngrx/store';
 import { State, getAllWordsState } from 'src/app/app.reducer';
 import { take, skip } from 'rxjs/operators';
 import { UpdateWord, PayloadData } from 'src/app/state/words/words.actions';
-
 // tslint:disable: max-line-length
 
 @Injectable({
@@ -25,8 +24,15 @@ export class NotificationService {
 
   public initNotificationListener() {
     this.localNotifications.on('trigger')
-        .subscribe(data => {
-          this.updateCustomWord(data.data);
+        .subscribe(async notification => {
+          const { data } = notification;
+          const { kind } = data;
+
+          if (kind === 'custom') {
+            await this.updateCustomWord(data);
+          } else if (kind === 'phrasal') {
+            await this.updatePrasalWord(data);
+          }
         });
   }
 
@@ -74,14 +80,44 @@ export class NotificationService {
       this.store.dispatch(new UpdateWord(new PayloadData(groupIndex, itemIndex, new Word(id, en, ua, date, editedStatuses, editedCount))));
 
       this.firestoreService.updateDocument(id, en, ua, editedStatuses, editedCount);
+
+      setTimeout(() => {
+        this.localNotifications.getAll().then(notifications => this.storage.set(COLLECTIONS.NOTIFICATIONS, notifications));
+      }, 1000);
+
     } catch ({ message }) {
-      console.log(message);
-      const user = await this.storage.get('user_uid');
-      await this.firestoreService.addDocument({ user, message, date: today }, COLLECTIONS.ERRORS);
+      this._catchError(message);
     }
   }
 
-  public async scheduleNotifications(word: Word, kind: string) {
+  public async updatePrasalWord(data) {
+    try {
+      const today = new Date();
+
+      const { word: { id, repeatDates }, collection } = data;
+
+      const editedStatuses = repeatDates.map(el => {
+        const newDate = new Date(el.date);
+        if ((newDate.getFullYear() === today.getFullYear() &&
+            newDate.getMonth() === today.getMonth() &&
+            newDate.getDate() === today.getDate()) ||
+            (newDate.getFullYear() < today.getFullYear() ||
+            newDate.getMonth() < today.getMonth() ||
+            newDate.getDate() < today.getDate())) {
+            el.status = true;
+        }
+        return el;
+      });
+
+      const editedCount = editedStatuses.reduce((acc, cur) => cur.status ? acc + 1 : acc, 0);
+
+      this.firestoreService.updateWordSetStatus(collection, id, editedCount, editedStatuses);
+    } catch ({ message }) {
+      this._catchError(message);
+    }
+  }
+
+  public async scheduleNotifications(word: Word, kind: string, collection?: string) {
     const today = new Date();
 
     for (const day of DATES_TO_REPEAT) {
@@ -98,7 +134,8 @@ export class NotificationService {
         autoClear: false,
         data: {
           word,
-          kind
+          kind,
+          collection
         }
       });
     }
@@ -106,6 +143,12 @@ export class NotificationService {
     setTimeout(() => {
       this.localNotifications.getAll().then(notifications => this.storage.set(COLLECTIONS.NOTIFICATIONS, notifications));
     }, 1000);
+  }
+
+  private async _catchError(message) {
+    console.log(message);
+    const user = await this.storage.get('user_uid');
+    await this.firestoreService.addDocument({ user, message, date: new Date() }, COLLECTIONS.ERRORS);
   }
 
 }

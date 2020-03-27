@@ -1,8 +1,16 @@
 ion-searchbar {
   margin-top: .7rem;
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all .3s;
 
   ::ng-deep .searchbar-input {
     border-radius: 10px;
+  }
+
+  &:focus-within {
+    width: 100%;
   }
 
   ::ng-deep .searchbar-search-icon.sc-ion-searchbar-md {

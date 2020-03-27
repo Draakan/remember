@@ -64,10 +64,12 @@ export class AppComponent {
 
               if (kind === 'custom') {
                 await this.notificationService.updateCustomWord(data);
+              } else if (kind === 'phrasal') {
+                await this.notificationService.updatePrasalWord(data);
               }
             }
 
-            this.storage.set(COLLECTIONS.NOTIFICATIONS, n);
+            await this.storage.set(COLLECTIONS.NOTIFICATIONS, n);
           }
 
         });

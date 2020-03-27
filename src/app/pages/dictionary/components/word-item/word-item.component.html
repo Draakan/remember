@@ -1,6 +1,10 @@
 <ion-item-sliding>
   <ion-item (click)="onItemClick(word)">
-    <div class="circle_stat">{{ word.repeatDates && word.repeatDates.length ? word.count : '&#8734;' }}</div>
+    <div 
+      [ngStyle]="{'background-color': word.count === 3 ? '#befad5' : '#c4f6fc'}"
+      class="circle_stat">
+      {{ word.repeatDates && word.repeatDates.length ? word.count : '&#8734;' }}
+    </div>
     <ion-label class="ion-label">
       <span class="dark-blue">{{ word.en }}</span>
       <span>{{ word.ua }}</span>

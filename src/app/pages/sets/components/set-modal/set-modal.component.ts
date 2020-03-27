@@ -8,6 +8,7 @@ import { TOAST_COLORS, DATES_TO_REPEAT } from 'src/app/configs';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { DetailComponent } from 'src/app/components/detail/detail.component';
 import { ModalService } from 'src/app/services/modal/modal.service';
+import { NotificationService } from 'src/app/services/notification/notification.service';
 
 @Component({
   selector: 'app-set-modal',
@@ -35,6 +36,7 @@ export class SetModalComponent implements OnInit {
     private firestoreService: FirestoreService,
     private toastService: ToastService,
     private modalService: ModalService,
+    private notificationService: NotificationService,
     public tts: TextToSpeech,
   ) { }
 
@@ -74,17 +76,17 @@ export class SetModalComponent implements OnInit {
         });
       }
 
-      setTimeout(() => {
-        this.selectedId = '';
-        this.isLoading = false;
-        wordSet.isLearn = true;
-        wordSet.repeatDates = repeatDates;
-        this.toastService.showToast('Word has been updated', TOAST_COLORS.WARNING);
-      }, 1500);
+      this.selectedId = '';
+      this.isLoading = false;
 
-      /* await this.firestoreService.updateWordSet(this.name, wordSet.id, true, repeatDates); */
+      wordSet.isLearn = true;
+      wordSet.repeatDates = repeatDates;
 
-      /* this.toastService.showToast('Word has been updated', TOAST_COLORS.WARNING); */
+      await this.firestoreService.updateWordSet(this.name, wordSet.id, true, repeatDates);
+
+      this.toastService.showToast('Word has been updated', TOAST_COLORS.SUCCESS);
+
+      this.notificationService.scheduleNotifications(wordSet, 'phrasal', this.name);
     } catch (err) {
       console.log(err);
       this.toastService.showToast('Server error', TOAST_COLORS.DANGER);

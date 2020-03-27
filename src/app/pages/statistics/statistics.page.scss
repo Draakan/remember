@@ -1,5 +1,12 @@
 ion-content {
+
   ion-card {
+    margin-top: 1.3rem;
     border-radius: 10px;
+
+    .canvas-container {
+      display: block;
+      margin-bottom: .5rem;
+    }
   }
 }

@@ -93,7 +93,8 @@ export class FirestoreService {
 
             const unixToDate = new Date(seconds * 1000);
             const newDateStr = `${ unixToDate.getFullYear() }-${ unixToDate.getMonth() + 1 }-${ unixToDate.getDate() }`;
-            return new WordSet(id, en, ua, new Date(newDateStr), repeatDates, count, isLearn, example);
+
+            return new WordSet(id, en, ua, new Date(newDateStr), dates, count, isLearn, example);
           }))).toPromise();
   }
 
@@ -124,6 +125,10 @@ export class FirestoreService {
 
   public async updateWordSet(collection: string, id: string, isLearn: boolean, repeatDates) {
     return await (await this.db.doc<WordSet>(`${ collection }/${ id }`)).update({ isLearn, repeatDates });
+  }
+
+  public async updateWordSetStatus(collection: string, id: string, count, repeatDates) {
+    return await (await this.db.doc<WordSet>(`${ collection }/${ id }`)).update({ count, repeatDates });
   }
 
   public async deleteDocument(id: string) {
