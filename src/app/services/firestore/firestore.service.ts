@@ -43,20 +43,9 @@ export class FirestoreService {
             const { en, ua, date: { seconds }, repeatDates, count } = doc.payload.doc.data();
             const { id } = doc.payload.doc;
 
-            let dates = [];
-
-            if (repeatDates && repeatDates.length) {
-              dates = repeatDates.map(el => {
-                return {
-                  status: el.status,
-                  date: new Date(el.date.seconds * 1000)
-                };
-              });
-            }
-
             const unixToDate = new Date(seconds * 1000);
             const newDateStr = `${ unixToDate.getFullYear() }-${ unixToDate.getMonth() + 1 }-${ unixToDate.getDate() }`;
-            return new Word(id, en, ua, new Date(newDateStr), repeatDates ? dates : undefined, count);
+            return new Word(id, en, ua, new Date(newDateStr), this._getRepeatedDates(repeatDates), count);
           })),
           map(words => {
             const array: Group[] = [];
@@ -80,21 +69,10 @@ export class FirestoreService {
             const { en, ua, date: { seconds }, repeatDates, count, isLearn, example } = doc.payload.doc.data();
             const { id } = doc.payload.doc;
 
-            let dates = [];
-
-            if (repeatDates && repeatDates.length) {
-              dates = repeatDates.map(el => {
-                return {
-                  status: el.status,
-                  date: new Date(el.date.seconds * 1000)
-                };
-              });
-            }
-
             const unixToDate = new Date(seconds * 1000);
             const newDateStr = `${ unixToDate.getFullYear() }-${ unixToDate.getMonth() + 1 }-${ unixToDate.getDate() }`;
 
-            return new WordSet(id, en, ua, new Date(newDateStr), dates, count, isLearn, example);
+            return new WordSet(id, en, ua, new Date(newDateStr), this._getRepeatedDates(repeatDates), count, isLearn, example);
           }))).toPromise();
   }
 
@@ -109,6 +87,20 @@ export class FirestoreService {
     user = (await this.db.firestore.collection(`${ COLLECTIONS.USERS }`).doc(this._user_uid).get()).data();
     this.storage.set('user_info', JSON.stringify(user));
     this.user = Promise.resolve(user);
+  }
+
+  private _getRepeatedDates(repeatDates) {
+    let dates = [];
+
+    if (repeatDates && repeatDates.length) {
+      dates = repeatDates.map(el => {
+        return {
+          status: el.status,
+          date: new Date(el.date.seconds * 1000)
+        };
+      });
+    }
+    return dates;
   }
 
   public get user$() {

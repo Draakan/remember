@@ -18,6 +18,7 @@
   </app-search>
 
   <div [@changeVisibilityDictionary]="animationState" class="container">
+    
     <ion-card
       *ngFor="let group of groupedWordsAsync | async; let groupIndex = index"
       [ngStyle]="{'display': getVisibilityGroup(group) ? 'block': 'none'}">
@@ -42,11 +43,13 @@
         </div>
       </ion-list>
     </ion-card>
-    <ion-card *ngIf="!(groupedWordsAsync | async)?.length && (isLoadingData$ | async)">
+    
+    <ion-card *ngIf="!(groupedWordsAsync | async)?.length && !(isLoadingData$ | async)">
       <ion-list lines="none">
         <ion-item><div style="margin: 0 auto;">There is nothing to show...</div></ion-item>
       </ion-list>
     </ion-card>
+
   </div>
 
   <ion-fab 
