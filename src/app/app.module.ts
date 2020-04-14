@@ -23,6 +23,7 @@ import { Toast } from '@ionic-native/toast/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 import { AppComponent } from './app.component';
 
@@ -70,6 +71,7 @@ import { reducers } from './app.reducer';
     Network,
     ScreenOrientation,
     AppVersion,
+    GooglePlus,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

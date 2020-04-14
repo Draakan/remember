@@ -12,7 +12,7 @@ const redirectLoggedInToHome = () => redirectLoggedInTo(['']);
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule),
+    loadChildren: () => import('src/app/layout/tabs/tabs.module').then(m => m.TabsPageModule),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },

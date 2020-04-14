@@ -13,7 +13,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../dictionary/dictionary.module').then(m => m.DictionaryModule)
+              import('src/app/pages/dictionary/dictionary.module').then(m => m.DictionaryModule)
           }
         ]
       },
@@ -23,7 +23,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../sets/sets.module').then(m => m.SetsPageModule)
+              import('src/app/pages/sets/sets.module').then(m => m.SetsPageModule)
           }
         ]
       },
@@ -33,7 +33,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../statistics/statistics.module').then(m => m.StatiscticsPageModule)
+              import('src/app/pages/statistics/statistics.module').then(m => m.StatiscticsPageModule)
           }
         ]
       },
@@ -43,7 +43,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../profile/profile.module').then(m => m.ProfilePageModule)
+              import('src/app/pages/profile/profile.module').then(m => m.ProfilePageModule)
           }
         ]
       },

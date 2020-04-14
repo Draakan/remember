@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 
 import { SetsPage } from './sets.page';
 import { SetModalComponent } from './components/set-modal/set-modal.component';
+import { SpinnerModule } from 'src/app/components/spinner/spinner.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { SetModalComponent } from './components/set-modal/set-modal.component';
     CommonModule,
     FormsModule,
     LayoutModule,
+    SpinnerModule,
     RouterModule.forChild([{ path: '', component: SetsPage }])
   ],
   declarations: [

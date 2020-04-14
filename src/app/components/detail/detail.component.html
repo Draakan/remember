@@ -5,12 +5,15 @@
         <ion-icon slot="start" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-title>
+      {{ title }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card>
-    <ion-card-header color="secondary">Details</ion-card-header>
+    <ion-card-header color="secondary">{{ word.en }}</ion-card-header>
     <ion-list lines="none">
       <ion-item>
         <ion-label class="flex">

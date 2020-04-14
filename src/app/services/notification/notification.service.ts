@@ -97,14 +97,15 @@ export class NotificationService {
       const { word: { id, repeatDates }, collection } = data;
 
       const editedStatuses = repeatDates.map(el => {
-        const newDate = new Date(el.date);
-        if ((newDate.getFullYear() === today.getFullYear() &&
-            newDate.getMonth() === today.getMonth() &&
-            newDate.getDate() === today.getDate()) ||
-            (newDate.getFullYear() < today.getFullYear() ||
-            newDate.getMonth() < today.getMonth() ||
-            newDate.getDate() < today.getDate())) {
+        el.date = new Date(el.date);
+        if ((el.date.getFullYear() === today.getFullYear() &&
+            el.date.getMonth() === today.getMonth() &&
+            el.date.getDate() === today.getDate()) ||
+            (el.date.getFullYear() < today.getFullYear() ||
+            el.date.getMonth() < today.getMonth() ||
+            el.date.getDate() < today.getDate())) {
             el.status = true;
+            console.log(el);
         }
         return el;
       });

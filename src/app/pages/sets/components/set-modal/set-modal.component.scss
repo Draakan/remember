@@ -15,20 +15,13 @@ ion-toolbar {
 ion-content {
   text-align: center;
 
-  .spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  h2 {
-    font-size: 36px;
-    margin: 1rem 0;
-  }
-
   ion-card {
     border-radius: 10px;
+
+    &-header {
+      font-size: 24px;
+      text-align: center;
+    }
 
     ::ng-deep ion-list {
       padding-top: 0;
@@ -59,7 +52,6 @@ ion-content {
         margin-left: 10px;
         font-size: 14px;
         border-radius: 50%;
-        background-color: lighten(#0cd1e8, 40);
         display: flex;
         justify-content: center;
         align-items: center;

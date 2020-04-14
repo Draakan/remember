@@ -1,8 +1,14 @@
 ion-toolbar {
+  text-align: center;
   --background: var(--ion-color-danger);
 
   ion-icon {
     color: white;
+  }
+
+  ion-title {
+    color: white;
+    margin-left: -3.2rem;
   }
 }
 
@@ -11,9 +17,9 @@ ion-content {
   ion-card {
     border-radius: 10px;
 
-    ion-card-header {
+    &-header {
+      font-size: 24px;
       text-align: center;
-      font-size: 18px;
     }
 
     .flex {

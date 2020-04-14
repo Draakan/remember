@@ -71,7 +71,6 @@ export class AppComponent {
 
             await this.storage.set(COLLECTIONS.NOTIFICATIONS, n);
           }
-
         });
       } catch (e) {
         console.log(e);

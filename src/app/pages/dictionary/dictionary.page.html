@@ -2,13 +2,7 @@
 
 <ion-content #content scrollEvents="true">
 
-  <div class="spinner">
-    <ion-spinner
-      [@changeVisibilitySpinner]="animationStateSpinner"
-      color="danger"
-      name="lines">
-    </ion-spinner>
-  </div>
+  <app-spinner [@changeVisibilitySpinner]="animationStateSpinner"></app-spinner>
 
   <app-search
     [@changeVisibilitySearch]="animationStateSearch"
@@ -60,6 +54,16 @@
     slot="fixed">
     <ion-fab-button color="danger" (click)="onAddButtonClick()">
       <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab
+    [hideOnscroll]="content" 
+    vertical="bottom"
+    horizontal="start" 
+    slot="fixed">
+    <ion-fab-button color="success" (click)="onGoogleSignIn()">
+      <ion-icon name="logo-google"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 

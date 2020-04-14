@@ -14,8 +14,11 @@
           <div class="container_center">
             <ion-label color="dark">{{ set.name }}</ion-label>
           </div>
-          <ion-label class="progress_label">Progress: 0%</ion-label>
-          <ion-progress-bar value="0" color="success"></ion-progress-bar>
+          <ion-label class="progress_label">Progress: {{ set.percent ? (set.percent * 100 | number:'1.0-0') : 0 }}%</ion-label>
+          <ion-progress-bar
+            [value]="set.percent ? (set.percent | number:'1.1-1') : 0"
+            color="success">
+          </ion-progress-bar>
         </ion-card>
       </ion-col>
     </ion-row>

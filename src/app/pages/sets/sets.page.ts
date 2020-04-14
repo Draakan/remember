@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Iterable } from 'src/app/models/iterable';
 import { ModalService } from 'src/app/services/modal/modal.service';
@@ -7,7 +7,8 @@ import { SetModalComponent } from './components/set-modal/set-modal.component';
 @Component({
   selector: 'app-sets',
   templateUrl: 'sets.page.html',
-  styleUrls: ['sets.page.scss']
+  styleUrls: ['sets.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SetsPage implements OnInit {
 
@@ -16,8 +17,8 @@ export class SetsPage implements OnInit {
   /* public iterableObject = new IterableObject('maksim', 25); */
 
   public sets: any[] = [
-    { name: 'break', number: 9 },
-    { name: 'bring', number: 3 },
+    { name: 'break', number: 9, percent: 4 / 9 },
+    { name: 'bring', number: 3, percent: 2 / 3 },
     { name: 'call', number: 7 },
     { name: 'come', number: 9 },
     { name: 'cut', number: 2 },
@@ -51,7 +52,7 @@ export class SetsPage implements OnInit {
   }
 
   public async onSetClick(name: string) {
-    const modal = await this.modalService.openComponent(SetModalComponent, { name });
+    await this.modalService.openComponent(SetModalComponent, { name });
   }
 
 }

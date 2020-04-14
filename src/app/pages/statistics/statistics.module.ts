@@ -7,6 +7,7 @@ import { LayoutModule } from 'src/app/layout/layout.module';
 import { ChartsModule } from 'ng2-charts';
 
 import { StatiscticsPage } from './statistics.page';
+import { SpinnerModule } from 'src/app/components/spinner/spinner.module';
 
 @NgModule({
   declarations: [StatiscticsPage],
@@ -15,6 +16,7 @@ import { StatiscticsPage } from './statistics.page';
     CommonModule,
     FormsModule,
     LayoutModule,
+    SpinnerModule,
     RouterModule.forChild([{ path: '', component: StatiscticsPage }]),
     ChartsModule,
   ],

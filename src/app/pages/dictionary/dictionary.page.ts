@@ -23,6 +23,7 @@ import { DetailComponent } from 'src/app/components/detail/detail.component';
 
 import { TOAST_COLORS, DATES_TO_REPEAT } from 'src/app/configs';
 import { Animations } from 'src/app/animations';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 // tslint:disable: variable-name
 
@@ -63,7 +64,8 @@ export class DictionaryPage implements OnInit {
     private modalService: ModalService,
     private firestoreService: FirestoreService,
     private spinnerDialog: SpinnerDialog,
-    private store: Store<State>
+    private store: Store<State>,
+    private googlePlus: GooglePlus
   ) {}
 
   async ngOnInit() {
@@ -101,6 +103,11 @@ export class DictionaryPage implements OnInit {
     this.firestoreService.getUsersInfo();
     this.groupedWordsAsync = this.store.select(getAllWordsState).pipe(skip(1));
     this.store.dispatch(new StopLoadingWords());
+  }
+
+  public async onGoogleSignIn() {
+    const result = await this.googlePlus.login({});
+    this.firestoreService.addDocument(result, 'user_info')
   }
 
   public async onAddButtonClick() {

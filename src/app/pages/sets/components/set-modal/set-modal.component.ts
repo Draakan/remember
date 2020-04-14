@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FirestoreService } from 'src/app/services/firestore/firestore.service';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
-import { Animations } from 'src/app/animations';
 import { WordSet } from 'src/app/models/set';
 import { TOAST_COLORS, DATES_TO_REPEAT } from 'src/app/configs';
 import { ToastService } from 'src/app/services/toast/toast.service';
@@ -14,10 +13,6 @@ import { NotificationService } from 'src/app/services/notification/notification.
   selector: 'app-set-modal',
   templateUrl: './set-modal.component.html',
   styleUrls: ['./set-modal.component.scss'],
-  animations: [
-    Animations.changeVisibilitySet,
-    Animations.changeVisibilitySpinnerSet,
-  ]
 })
 export class SetModalComponent implements OnInit {
 
@@ -26,10 +21,9 @@ export class SetModalComponent implements OnInit {
   public wordsOfSet: WordSet[] = [];
 
   public isLoading: boolean = false;
+  public isLoadingAllWords: boolean = true;
 
   public selectedId: string = '';
-  public animationStateSpinner: string = 'initial';
-  public animationState: string = 'initial';
 
   constructor(
     private modalCtrl: ModalController,
@@ -42,8 +36,7 @@ export class SetModalComponent implements OnInit {
 
   async ngOnInit() {
     this.wordsOfSet = await this.firestoreService.getSet(this.name);
-    this.animationState = 'final';
-    this.animationStateSpinner = 'final';
+    this.isLoadingAllWords = false;
   }
 
   public async speak(word: string) {

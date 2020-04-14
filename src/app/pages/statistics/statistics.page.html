@@ -1,8 +1,11 @@
 <app-header [title]="title"></app-header>
 
 <ion-content>
-  <ion-card>
-    <div class="canvas-container">
+  <ion-card class="doughnut">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    <div 
+      *ngIf="!isLoading"
+      class="canvas-container">
       <canvas
         baseChart
         [labels]="doughnutChartLabels"
@@ -11,8 +14,11 @@
       </canvas>
     </div>
   </ion-card>
-  <ion-card>
-    <div class="canvas-container">
+  <ion-card class="line">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    <div 
+      *ngIf="!isLoading"
+      class="canvas-container">
       <canvas 
         baseChart
         [datasets]="barChartData"
