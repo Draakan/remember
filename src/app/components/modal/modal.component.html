@@ -1,15 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="close()">
-        <ion-icon slot="start" name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      {{ title }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="title" [isVisible]="true" (close)="close()"></app-header>
 
 <ion-content>
   <form [formGroup]="form">
@@ -29,8 +18,9 @@
   <div class="button_center">
     <ion-button
       [disabled]="form.invalid"
-      color="danger"
-      (click)="onFormSubmit()">Add
+      color="success"
+      (click)="onFormSubmit()">
+      <ion-icon name="checkmark-done-outline"></ion-icon>
     </ion-button>
   </div>
 </ion-content>

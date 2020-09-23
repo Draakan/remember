@@ -1,15 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="close()">
-        <ion-icon slot="start" name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      Phrasal verbs
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="title" [isVisible]="true" (close)="close()"></app-header>
 
 <ion-content>
 

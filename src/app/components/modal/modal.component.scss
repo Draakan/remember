@@ -1,21 +1,7 @@
-ion-toolbar {
-  text-align: center;
-  --background: var(--ion-color-danger);
-
-  ion-icon {
-    color: white;
-  }
-
-  ion-title {
-    margin-left: -2.5rem;
-    color: white;
-  }
-}
-
 ion-content {
 
   ion-card {
-    border-radius: 30px;
+    border-radius: 10px;
     height: 3rem;
 
     &:first-child {
@@ -24,8 +10,10 @@ ion-content {
   }
 
   .button_center {
-    text-align: center;
-    margin-top: 2rem;
+    position: absolute;
+    bottom: 1%;
+    left: 50%;
+    transform: translate(-50%, 0);
 
     ion-button {
       width: 5rem;

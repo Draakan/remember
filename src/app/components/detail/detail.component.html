@@ -1,15 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="close()">
-        <ion-icon slot="start" name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>
-      {{ title }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="title" [isVisible]="true" (close)="close()"></app-header>
 
 <ion-content>
   <ion-card>
@@ -42,5 +31,32 @@
         <ion-label style="white-space: pre-wrap;">{{ word.example }}</ion-label>
       </ion-item>
     </ion-list>
+    <!-- <div class="center">
+      <ion-button color="secondary" (click)="practice()">
+        Practice
+      </ion-button>
+    </div>
+    <ion-card-content cdkDropListGroup>
+      <div
+        class="buttons"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="drop($event)">
+        <div class="char-button" *ngFor="let button of buttons" cdkDrag>{{ button | uppercase }}</div>
+      </div>
+    </ion-card-content>
   </ion-card>
-</ion-content>
+  <ion-card>
+    <pre>
+      export class Iterable &#123;
+        *[Symbol.iterator]() &#123;
+          for (const [key, value] of Object.entries(this)) &#123;
+            yield &#123; key, value };
+          }
+        }
+      }
+      <code>
+      </code>
+    </pre>
+  </ion-card> -->
+</ion-content> 

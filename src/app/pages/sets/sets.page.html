@@ -17,7 +17,9 @@
           <ion-label class="progress_label">Progress: {{ set.percent ? (set.percent * 100 | number:'1.0-0') : 0 }}%</ion-label>
           <ion-progress-bar
             [value]="set.percent ? (set.percent | number:'1.1-1') : 0"
-            color="success">
+            color="success"
+            value="0" 
+            buffer="0">
           </ion-progress-bar>
         </ion-card>
       </ion-col>

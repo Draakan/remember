@@ -1,6 +1,9 @@
-<app-header [title]="title"></app-header>
+<!-- <app-header [title]="title"></app-header> -->
 
 <ion-content>
+  <div class="header">
+    <h3>Sign In</h3>
+  </div>
   <form [formGroup]="form">
     <ion-card>
       <ion-item>
@@ -18,11 +21,17 @@
       <ion-button 
         [disabled]="form.invalid"
         (click)="signIn()"
-        color="danger">Sign In
+        color="success">Sign In
       </ion-button>
       <ion-text (click)="toRegisterPage()">Don't have an account? &nbsp;
         <ion-icon name="arrow-forward"></ion-icon>
       </ion-text>
     </div>
   </form>
+  <div style="text-align:center;margin-top: 1rem;">
+    <ion-button>
+      <ion-icon name="logo-google"></ion-icon>&nbsp;
+      Sign in with Goggle
+    </ion-button>
+  </div>
 </ion-content>

@@ -25,7 +25,16 @@ ion-content {
     }
   }
 
-  ion-button {
-    --border-radius: 20px;
+  .button_center {
+    position: absolute;
+    bottom: 1%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    ion-button {
+      --border-radius: 20px;
+      width: 5rem;
+    }
   }
+
 }

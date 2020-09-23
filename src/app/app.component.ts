@@ -26,7 +26,7 @@ import { COLLECTIONS } from './configs';
 })
 export class AppComponent {
 
-  private _statusBarColor: string = '#ec5252';
+  private _statusBarColor: string = '#fff';
 
   constructor(
     public loaderService: LoaderService,
@@ -77,7 +77,7 @@ export class AppComponent {
       }
 
       this.splashScreen.hide();
-      this.statusBar.styleLightContent();
+      this.statusBar.styleDefault();
       this.statusBar.backgroundColorByHexString(this._statusBarColor);
       this.networkService.initNetworkListener();
       this.backgroundMode.enable();

@@ -18,6 +18,8 @@ export class SetModalComponent implements OnInit {
 
   @Input() name: string = '';
 
+  public title: string = 'Phrasal verbs';
+
   public wordsOfSet: WordSet[] = [];
 
   public isLoading: boolean = false;

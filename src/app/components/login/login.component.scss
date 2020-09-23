@@ -1,7 +1,15 @@
 ion-content {
+  --background: none;
+  background-image: url('src/assets/background.svg');
+
+  overflow-y: auto !important;
+
+  .header {
+    text-align: center;
+  }
 
   ion-card {
-    border-radius: 30px;
+    border-radius: 10px;
     height: 3rem;
 
     &:first-child {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,15 +7,18 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
   @Input() title: string;
+  @Input() isVisible: boolean = false;
+
+  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() { }
 
   ngOnInit() {
-    this._setTitle();
+    this.title = this.title ? this.title : 'Dictionary';
   }
 
-  private _setTitle(): void {
-    this.title = this.title ? this.title : 'Dictionary';
+  public onClickClose() {
+    this.close.emit(true);
   }
 
 }

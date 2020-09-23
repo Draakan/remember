@@ -10,6 +10,8 @@ import { StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from './app-routing.module';
 import { ComponentsModule } from './components/components.module';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 // native
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -51,6 +53,7 @@ import { reducers } from './app.reducer';
     AngularFireAuthModule,
     AngularFireAuthGuardModule,
     AngularFireStorageModule,
+    DragDropModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
     StoreModule.forRoot(reducers),
